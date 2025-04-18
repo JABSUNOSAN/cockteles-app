@@ -1,25 +1,6 @@
-/* Cards de los cockteles */
-.card {
-    margin-bottom: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
 
-.card-img-top {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
-
-.card-body {
-    padding: 20px;
-}
-
-.btn {
-    margin-right: 10px;
-}
-
-/* Cuerpo */
 body {
+    background-color: #6b6969;
     font-family: 'Poppins', sans-serif;
 }
 
@@ -201,4 +182,37 @@ h5.card-title {
 #cocktailModal .modal-title {
     font-weight: 600;
     color: #ffffff;
+}
+
+/* Estilo de las cards del listado del usuario autenticado */
+.card {
+    background-color: rgba(40, 40, 40, 0.95);
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid #ff4d6d;
+}
+
+.card-body.text-center {
+    color: #fff;
+}
+
+.card-title {
+    color: #222222;
+    font-weight: 600;
+}
+
+.cocktail-img-circle {
+    border: 3px solid #ff4d6d;
+}
+
+/* Fondo de la vista index.blade.php */
+body.gray-bg {
+    background-color: #a5a4a4;
+    min-height: 100vh;
+    margin: 0;
+}
+
+body.gray-bg .content {
+    background-color: transparent;
+    position: relative;
 }

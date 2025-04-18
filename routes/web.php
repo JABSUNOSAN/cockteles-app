@@ -4,17 +4,6 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CocktailController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
 // Ruta principal que muestra diferentes vistas según autenticación
 Route::get('/', [CocktailController::class, 'index']);
 
@@ -23,7 +12,7 @@ Route::get('/dashboard', function () {
     return redirect()->route('index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Ruta para la vista index (reemplaza al dashboard)
+// Ruta para la vista index
 Route::get('/index', [CocktailController::class, 'index'])->name('index')->middleware('auth');
 
 // Rutas de perfil (requieren autenticación)
