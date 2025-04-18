@@ -9,10 +9,13 @@ class CreateCocktailsTable extends Migration
     public function up()
     {
         Schema::create('cocktails', function (Blueprint $table) {
-            $table->id();
+            $table->string('id')->primary();
             $table->string('name');
-            $table->string('description');
-            $table->timestamps();
+            $table->text('description');
+            $table->enum('tipo', ['alcoholico', 'no alcoholico']);
+            $table->text('instructions');
+            $table->timestamp('create_at')->nullable(); // ← Sin la "d"
+            $table->timestamp('update_at')->nullable(); // ← Sin la "d"
         });
     }
 
@@ -21,4 +24,3 @@ class CreateCocktailsTable extends Migration
         Schema::dropIfExists('cocktails');
     }
 }
-

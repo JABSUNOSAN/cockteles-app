@@ -2,16 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Cocktail extends Model
 {
-    use HasFactory;
-
+    // Especifica los nombres correctos de tus columnas
+    const CREATED_AT = 'create_at';
+    const UPDATED_AT = 'update_at';
+    
     protected $fillable = [
+        'id',
         'name',
-        'description',
+        'description', 
+        'tipo',
+        'instructions',
+        'create_at', // Añade estos campos al fillable
+        'update_at'
     ];
-}
 
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+    protected $keyType = 'string';
+}

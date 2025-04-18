@@ -216,3 +216,28 @@ body.gray-bg .content {
     background-color: transparent;
     position: relative;
 }
+
+/* Estilos para el modal de las cards del usuario autenticado */
+#cocktailSaveModal .modal-content {
+    border: 1px solid #ff4d6d;
+}
+
+#cocktailSaveModal .modal-header {
+    border-bottom: 1px solid rgba(255, 77, 109, 0.3);
+}
+
+#cocktailSaveModal #save-cocktail-btn {
+    background-color: #ff4d6d;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 30px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+#cocktailSaveModal #save-cocktail-btn:hover {
+    background-color: #e04460;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 77, 109, 0.4);
+}

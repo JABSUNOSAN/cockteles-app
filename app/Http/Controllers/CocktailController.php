@@ -32,6 +32,45 @@ class CocktailController extends Controller
         return response()->json($details['drinks'][0]);
     }
 
+    public function save(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'tipo' => 'required|in:alcoholico,no alcoholico',
+            //'instructions' => 'required|string'
+        ]);
+
+        try {
+            $existing = Cocktail::find($request->id);
+            if ($existing) {
+                return response()->json([
+                    'message' => 'Este cóctel ya está guardado en tu base de datos'
+                ], 409);
+            }
+
+            $cocktail = Cocktail::create([
+                'id' => $request->id,
+                'name' => $request->name,
+                'description' => $request->description,
+                'tipo' => $request->tipo,
+                //'instructions' => $request->instructions
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cóctel guardado correctamente'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al guardar el cóctel: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
     public function store(Request $request)
     {
         $cocktail = new Cocktail();

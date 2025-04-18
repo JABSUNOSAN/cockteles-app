@@ -196,7 +196,7 @@
             ).join(', ');
 
             $.ajax({
-                url: '/cocktails/save',
+                url: "{{ route('cocktails.save') }}",
                 method: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',
