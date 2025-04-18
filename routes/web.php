@@ -38,4 +38,6 @@ Route::put('/cocktails/{id}', [CocktailController::class, 'update']);
 Route::delete('/cocktails/{id}', [CocktailController::class, 'destroy']);
 Route::get('/cocktails/{idDrink}/details', [CocktailController::class, 'getCocktailDetails']);
 
+Route::get('/cocktails/{idDrink}', [\App\Http\Controllers\CocktailController::class, 'getCocktailDetails']);
+
 require __DIR__.'/auth.php';
