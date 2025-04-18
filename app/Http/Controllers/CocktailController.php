@@ -10,20 +10,18 @@ class CocktailController extends Controller
 {
     public function index()
     {
-        // Crear el cliente de Guzzle
         $client = new Client();
-        
-        // Hacer la solicitud a la API para obtener los cócteles
         $response = $client->get('https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=Cocktail');
-        
-        // Decodificar la respuesta JSON de la API
         $cocktails = json_decode($response->getBody()->getContents(), true)['drinks'];
-        
-        // Limitar a los primeros 3 cócteles
-        $cocktails = array_slice($cocktails, 0, 3);
 
-        // Pasar la variable $cocktails a la vista 'welcome'
-        return view('welcome', compact('cocktails'));
+        // Determinar qué vista mostrar basado en la autenticación
+        if (auth()->check()) {
+            return view('cocktails.index', compact('cocktails'));
+        } else {
+            // Limitar a los primeros 3 cócteles para la vista welcome
+            $cocktails = array_slice($cocktails, 0, 3);
+            return view('welcome', compact('cocktails'));
+        }
     }
 
     public function getCocktailDetails($idDrink)

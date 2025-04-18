@@ -184,3 +184,21 @@ h5.card-title {
         margin-top: 1rem;
     }
 }
+
+/* Estilos para el modal de el carrousel del welcome */
+.modal-content.bg-dark {
+    background-color: #1c1c1c;
+    color: #f8f9fa;
+    border-radius: 0.5rem;
+}
+
+#cocktail-ingredients li::before {
+    content: "🍸 ";
+    margin-right: 0.4rem;
+    color: #ffc107;
+}
+
+#cocktailModal .modal-title {
+    font-weight: 600;
+    color: #ffffff;
+}

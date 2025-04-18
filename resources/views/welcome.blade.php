@@ -1,5 +1,3 @@
-<!-- resources/views/welcome.blade.php -->
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -76,7 +74,11 @@
                                         <h3>{{ $cocktail['strDrink'] }}</h3>
                                         <p class="d-none d-md-block">Un delicioso cóctel para disfrutar en cualquier
                                             ocasión.</p>
-                                        <a href="#" class="btn custom-btn mt-2">Ver más</a>
+                                        <a href="#" class="btn custom-btn mt-2 ver-detalle-btn"
+                                            data-id="{{ $cocktail['idDrink'] }}" data-bs-toggle="modal"
+                                            data-bs-target="#cocktailModal">
+                                            Ver más
+                                        </a>
                                     </div>
 
                                 </div>
@@ -100,6 +102,55 @@
             </div>
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="cocktailModal" tabindex="-1" aria-labelledby="cocktailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="cocktailModalLabel">Detalle del Cóctel</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <h4 id="cocktail-name" class="mb-3"></h4>
+                    <p><strong>Instrucciones:</strong></p>
+                    <p id="cocktail-instructions"></p>
+                    <p class="mt-4"><strong>Ingredientes:</strong></p>
+                    <ul id="cocktail-ingredients" class="list-unstyled ps-3"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).on('click', '.ver-detalle-btn', function () {
+            var idDrink = $(this).data('id');
+
+            $.ajax({
+                url: '/cocktails/' + idDrink,
+                method: 'GET',
+                success: function (data) {
+                    $('#cocktail-name').text(data.strDrink);
+                    $('#cocktail-instructions').text(data.strInstructions);
+
+                    let ingredientes = '';
+                    for (let i = 1; i <= 15; i++) {
+                        let ingrediente = data['strIngredient' + i];
+                        let medida = data['strMeasure' + i];
+                        if (ingrediente) {
+                            ingredientes += `<li>${medida ? medida : ''} ${ingrediente}</li>`;
+                        }
+                    }
+                    $('#cocktail-ingredients').html(ingredientes);
+                },
+                error: function () {
+                    $('#cocktail-name').text('Error al cargar los datos');
+                    $('#cocktail-instructions').text('');
+                    $('#cocktail-ingredients').html('');
+                }
+            });
+        });
+    </script>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
