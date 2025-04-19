@@ -187,7 +187,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @csrf
     <script>
-        // Esto asegura que jQuery pueda encontrar el token CSRF
         $(document).ready(function () {
             $.ajaxSetup({
                 headers: {
@@ -198,11 +197,9 @@
     </script>
     <script>
         $(document).ready(function () {
-            // Configuración de los modales
             const viewModal = new bootstrap.Modal('#viewModal');
             const editModal = new bootstrap.Modal('#editModal');
 
-            // Manejar clic en botón Ver
             $(document).on('click', '.view-btn', function () {
                 const id = $(this).data('id');
 
@@ -217,7 +214,6 @@
                 });
             });
 
-            // Manejar clic en botón Editar
             $(document).on('click', '.edit-btn', function () {
                 const id = $(this).data('id');
 
@@ -233,7 +229,6 @@
                 });
             });
 
-            // Manejar clic en botón Eliminar
             $(document).on('click', '.delete-btn', function () {
                 const id = $(this).data('id');
 
@@ -273,7 +268,6 @@
                 });
             });
 
-            // Manejar envío del formulario de edición
             $('#edit-form').submit(function (e) {
                 e.preventDefault();
 

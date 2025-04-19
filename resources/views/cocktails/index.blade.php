@@ -134,10 +134,8 @@
         let cocktailModal = null;
 
         $(document).ready(function() {
-            // Inicializar el modal
             cocktailModal = new bootstrap.Modal(document.getElementById('cocktailSaveModal'));
             
-            // Manejar clic en la X del modal
             $('#cocktailSaveModal .btn-close').click(function() {
                 cocktailModal.hide();
             });
@@ -153,12 +151,10 @@
                 success: function(data) {
                     currentCocktailData = data;
                     
-                    // Actualizar contenido del modal
                     $('#cocktail-name').text(data.strDrink);
                     $('#cocktail-type').text(data.strAlcoholic === 'Alcoholic' ? 'Alcohólico' : 'No alcohólico');
                     $('#cocktail-instructions').text(data.strInstructions);
 
-                    // Construir lista de ingredientes
                     let ingredientes = '';
                     for (let i = 1; i <= 15; i++) {
                         let ingrediente = data['strIngredient' + i];
@@ -232,7 +228,7 @@
                     image_url: cocktailData.strDrinkThumb
                 },
                 success: function(response) {
-                    cocktailModal.hide(); // Cerrar el modal después de guardar
+                    cocktailModal.hide();
                     Swal.fire({
                         title: '¡Guardado!',
                         text: 'El cóctel ha sido guardado correctamente.',

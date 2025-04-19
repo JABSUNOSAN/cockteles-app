@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cocktail extends Model
 {
-    // Especifica los nombres correctos de tus columnas
     const CREATED_AT = 'create_at';
     const UPDATED_AT = 'update_at';
     

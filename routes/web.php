@@ -4,18 +4,16 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CocktailController;
 
-// Ruta principal que muestra diferentes vistas según autenticación
 Route::get('/', [CocktailController::class, 'index']);
 
-// Ruta para el dashboard que ahora redirige a index
 Route::get('/dashboard', function () {
     return redirect()->route('index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Ruta para la vista index
+
 Route::get('/index', [CocktailController::class, 'index'])->name('index')->middleware('auth');
 
-// Rutas de perfil (requieren autenticación)
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -25,7 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('cocktails', CocktailController::class)->except(['create', 'show']);
 });
 
-// Rutas de cócteles
+
 Route::middleware('auth')->group(function () {
     Route::get('/cocktails', [CocktailController::class, 'index']);
     Route::post('/cocktails', [CocktailController::class, 'store']);

@@ -14,11 +14,9 @@ class CocktailController extends Controller
         $response = $client->get('https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=Cocktail');
         $cocktails = json_decode($response->getBody()->getContents(), true)['drinks'];
 
-        // Determinar qué vista mostrar basado en la autenticación
         if (auth()->check()) {
             return view('cocktails.index', compact('cocktails'));
         } else {
-            // Limitar a los primeros 3 cócteles para la vista welcome
             $cocktails = array_slice($cocktails, 0, 3);
             return view('welcome', compact('cocktails'));
         }

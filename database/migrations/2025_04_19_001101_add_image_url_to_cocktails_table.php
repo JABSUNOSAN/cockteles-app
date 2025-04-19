@@ -15,8 +15,8 @@ class AddImageUrlToCocktailsTable extends Migration
     {
         Schema::table('cocktails', function (Blueprint $table) {
             $table->string('image_url')
-                  ->nullable()       // Permite valores NULL
-                  ->after('instructions');  // Posiciona la columna después de 'instructions'
+                  ->nullable()
+                  ->after('instructions');
         });
     }
 
@@ -28,7 +28,7 @@ class AddImageUrlToCocktailsTable extends Migration
     public function down()
     {
         Schema::table('cocktails', function (Blueprint $table) {
-            $table->dropColumn('image_url');  // Elimina la columna si se revierte la migración
+            $table->dropColumn('image_url');
         });
     }
 }
