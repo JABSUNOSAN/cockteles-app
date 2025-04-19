@@ -17,25 +17,25 @@ body {
 }
 
 .navbar-brand:hover {
-    color: #fff !important;  /* Forzar el color blanco en el hover */
+    color: #fff !important;
 }
 
 .navbar-brand svg {
-    color: #fff !important; /* fuerza el color blanco */
-    text-decoration: none !important; /* sin subrayado */
+    color: #fff !important;
+    text-decoration: none !important; 
     transition: color 0.3s ease;
     margin-right: 10px;
 }
 
 .navbar-nav .nav-link {
-    color: #fff !important; /* fuerza el color blanco */
-    text-decoration: none !important; /* sin subrayado */
+    color: #fff !important;
+    text-decoration: none !important; 
     transition: color 0.3s ease;
 }
 
 .navbar-nav .nav-link:hover,
 .navbar-nav .nav-link:focus {
-    color: #ddd !important; /* gris claro al hover */
+    color: #ddd !important;
     text-decoration: none !important;
 }
 
@@ -76,7 +76,7 @@ body {
     opacity: 1;
   }
 
-/* Efectos sutiles en las tarjetas en la vista welcome*/
+
 .card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -99,7 +99,7 @@ h5.card-title {
     font-weight: 600;
 }
 
-/* Estilo general */
+
 .container {
     z-index: 2;
 }
@@ -222,6 +222,14 @@ body.gray-bg .content {
     border: 1px solid #ff4d6d;
 }
 
+#editModal .modal-content {
+    border: 1px solid #ff4d6d;
+}
+
+#cocktailModal .modal-content {
+    border: 1px solid #ff4d6d;
+}
+
 #cocktailSaveModal .modal-header {
     border-bottom: 1px solid rgba(255, 77, 109, 0.3);
 }
@@ -240,4 +248,26 @@ body.gray-bg .content {
     background-color: #e04460;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(255, 77, 109, 0.4);
+}
+
+#editModal .modal-footer .btn.custom-btn.no-hover-force {
+    /* Estilos base */
+    background-color: rgba(255, 77, 109, 0.2) !important;
+    border: 2px solid #ff4d6d !important;
+    color: #ff4d6d !important;
+    
+    /* Elimina todos los efectos hover */
+    transition: none !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+#editModal .modal-footer .btn.custom-btn.no-hover-force:hover,
+#editModal .modal-footer .btn.custom-btn.no-hover-force:focus,
+#editModal .modal-footer .btn.custom-btn.no-hover-force:active {
+    /* Mantiene los mismos estilos que el estado normal */
+    background-color: rgba(255, 77, 109, 0.2) !important;
+    border: 2px solid #ff4d6d !important;
+    color: #ff4d6d !important;
+    cursor: pointer !important; /* Mantiene el cursor como puntero */
 }

@@ -13,6 +13,7 @@
 </head>
 
 <body class="gray-bg">
+    <!-- Navbar (se mantiene igual) -->
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ route('index') }}">
@@ -89,14 +90,15 @@
                             </div>
                             <div class="card-body text-center text-white">
                                 <h5 class="card-title">{{ $cocktail->name }}</h5>
-                                <p class="text-capitalize">{{ $cocktail->tipo }}</p>
+                                <p class="text-dark">{{ $cocktail->tipo }}</p>
 
                                 <div class="d-flex justify-content-center mt-3">
-                                    <button class="btn btn-sm btn-outline-warning edit-btn mx-1"
-                                        data-id="{{ $cocktail->id }}">
+                                    <!-- Botón Editar -->
+                                    <button class="btn btn-sm btn-outline-dark edit-btn mx-1" data-id="{{ $cocktail->id }}">
                                         <i class="fas fa-edit"></i>
                                     </button>
 
+                                    <!-- Botón Eliminar -->
                                     <button class="btn btn-sm btn-outline-danger delete-btn mx-1"
                                         data-id="{{ $cocktail->id }}">
                                         <i class="fas fa-trash"></i>
@@ -111,6 +113,27 @@
                         <a href="{{ route('index') }}" class="btn custom-btn">Explorar cócteles</a>
                     </div>
                 @endforelse
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Ver Detalles -->
+    <div class="modal fade" id="viewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Detalles del Cóctel</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4 id="view-name"></h4>
+                    <p><strong>Tipo:</strong> <span id="view-type"></span></p>
+                    <p><strong>Ingredientes:</strong></p>
+                    <p id="view-ingredients"></p>
+                    <p><strong>Instrucciones:</strong></p>
+                    <p id="view-instructions"></p>
+                </div>
             </div>
         </div>
     </div>
@@ -152,7 +175,7 @@
                     </div>
                     <div class="modal-footer border-0">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn custom-btn">Guardar Cambios</button>
+                        <button type="submit" class="btn custom-btn no-hover-force">Guardar Cambios</button>
                     </div>
                 </form>
             </div>
@@ -179,6 +202,21 @@
             const viewModal = new bootstrap.Modal('#viewModal');
             const editModal = new bootstrap.Modal('#editModal');
 
+            // Manejar clic en botón Ver
+            $(document).on('click', '.view-btn', function () {
+                const id = $(this).data('id');
+
+                $.get(`/cocktails/${id}`, function (data) {
+                    $('#view-name').text(data.name);
+                    $('#view-type').text(data.tipo === 'alcoholico' ? 'Alcohólico' : 'No alcohólico');
+                    $('#view-ingredients').text(data.description);
+                    $('#view-instructions').text(data.instructions);
+                    viewModal.show();
+                }).fail(function () {
+                    Swal.fire('Error', 'No se pudieron cargar los detalles', 'error');
+                });
+            });
+
             // Manejar clic en botón Editar
             $(document).on('click', '.edit-btn', function () {
                 const id = $(this).data('id');
@@ -196,9 +234,8 @@
             });
 
             // Manejar clic en botón Eliminar
-            $('.delete-btn').click(function () {
+            $(document).on('click', '.delete-btn', function () {
                 const id = $(this).data('id');
-                const token = $('input[name="_token"]').val() || '{{ csrf_token() }}'; // Obtener token CSRF
 
                 Swal.fire({
                     title: '¿Eliminar cóctel?',
@@ -215,31 +252,19 @@
                             url: `/cocktails/${id}`,
                             type: 'DELETE',
                             data: {
-                                _token: token // Enviar token CSRF
+                                _token: '{{ csrf_token() }}'
                             },
-                            success: function (response) {
-                                if (response.status === 'success') {
-                                    Swal.fire(
-                                        '¡Eliminado!',
-                                        response.message,
-                                        'success'
-                                    ).then(() => location.reload());
-                                } else {
-                                    Swal.fire(
-                                        'Error',
-                                        response.message || 'Error desconocido',
-                                        'error'
-                                    );
-                                }
+                            success: function () {
+                                Swal.fire(
+                                    '¡Eliminado!',
+                                    'El cóctel ha sido eliminado.',
+                                    'success'
+                                ).then(() => location.reload());
                             },
-                            error: function (xhr) {
-                                let errorMsg = 'Error al conectar con el servidor';
-                                if (xhr.responseJSON && xhr.responseJSON.message) {
-                                    errorMsg = xhr.responseJSON.message;
-                                }
+                            error: function () {
                                 Swal.fire(
                                     'Error',
-                                    errorMsg,
+                                    'No se pudo eliminar el cóctel',
                                     'error'
                                 );
                             }
