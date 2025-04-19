@@ -135,7 +135,7 @@
                 method: 'GET',
                 success: function (data) {
                     $('#cocktail-name').text(data.strDrink);
-                    $('#cocktail-instructions').text(data.strInstructions);
+                    $('#cocktail-instructions').text(data.strInstructionsES);
 
                     let ingredientes = '';
                     for (let i = 1; i <= 15; i++) {

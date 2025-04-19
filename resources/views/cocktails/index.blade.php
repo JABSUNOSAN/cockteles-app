@@ -153,7 +153,7 @@
                     
                     $('#cocktail-name').text(data.strDrink);
                     $('#cocktail-type').text(data.strAlcoholic === 'Alcoholic' ? 'Alcohólico' : 'No alcohólico');
-                    $('#cocktail-instructions').text(data.strInstructions);
+                    $('#cocktail-instructions').text(data.strInstructionsES);
 
                     let ingredientes = '';
                     for (let i = 1; i <= 15; i++) {
@@ -224,7 +224,7 @@
                     name: cocktailData.strDrink,
                     description: description,
                     tipo: cocktailData.strAlcoholic === 'Alcoholic' ? 'alcoholico' : 'no alcoholico',
-                    instructions: cocktailData.strInstructions,
+                    instructions: cocktailData.strInstructionsES,
                     image_url: cocktailData.strDrinkThumb
                 },
                 success: function(response) {
