@@ -94,8 +94,11 @@ class CocktailController extends Controller
     }
     public function savedCocktails()
     {
-        $cocktails = Cocktail::orderBy('create_at', 'desc')->get();
-        return view('cocktails.saved', compact('cocktails'));
+        $cocktails = Cocktail::orderBy('update_at', 'desc')->get();
+        return view('cocktails.saved', [
+            'cocktails' => $cocktails,
+            'currentUser' => auth()->user()
+        ]);
     }
 
     public function store(Request $request)
@@ -116,6 +119,11 @@ class CocktailController extends Controller
     public function edit($id)
     {
         $cocktail = Cocktail::find($id);
+
+        if (!$cocktail) {
+            return response()->json(['error' => 'Cóctel no encontrado'], 404);
+        }
+
         return view('cocktails.edit', compact('cocktail'));
     }
 
@@ -131,7 +139,19 @@ class CocktailController extends Controller
     public function destroy($id)
     {
         $cocktail = Cocktail::find($id);
+
+        if (!$cocktail) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Cóctel no encontrado'
+            ], 404);
+        }
+
         $cocktail->delete();
-        return redirect()->route('cocktails.show');
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Cóctel eliminado correctamente'
+        ]);
     }
 }

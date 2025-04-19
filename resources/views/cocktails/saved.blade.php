@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +16,8 @@
     <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ route('index') }}">
-                <svg class="cocktail-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="cocktail-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polygon points="3 3, 21 3, 12 12"></polygon>
                     <line x1="12" y1="12" x2="12" y2="20"></line>
                     <line x1="9" y1="21" x2="15" y2="21"></line>
@@ -26,7 +28,7 @@
                 </svg>
                 Cócteles
             </a>
-            
+
             <div class="d-flex align-items-center">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
@@ -36,9 +38,10 @@
                         <a class="nav-link text-white" href="{{ route('cocktails.saved') }}">Mis Cócteles</a>
                     </li>
                 </ul>
-                
+
                 <div class="dropdown">
-                    <button class="btn dropdown-toggle text-white" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn dropdown-toggle text-white" type="button" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
                         {{ Auth::user()->name }}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
@@ -46,7 +49,8 @@
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">
+                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault(); this.closest('form').submit();">
                                     Cerrar sesión
                                 </a>
                             </form>
@@ -59,51 +63,54 @@
 
     <div class="content">
         <div class="container pt-4">
-            <h2 class="text-white text-center mb-4">Mis Cócteles Guardados</h2>
-            
+            <h2 class="text-white text-center mb-4">Todos los Cócteles Guardados</h2>
+
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
             <div class="row">
-                @foreach($cocktails as $cocktail)
-                <div class="col-md-4 mb-4">
-                    <div class="card bg-transparent border-0">
-                        <div class="d-flex justify-content-center">
-                            <div class="image-container">
-                                @if(isset($cocktail->image_url) && $cocktail->image_url)
-                                    <img src="{{ $cocktail->image_url }}" alt="{{ $cocktail->name }}" class="cocktail-img-circle">
-                                @else
-                                    <img src="{{ asset('images/default-cocktail.png') }}" alt="{{ $cocktail->name }}" class="cocktail-img-circle">
-                                @endif
-                            </div>
-                        </div>
-                        <div class="card-body text-center text-white">
-                            <h5 class="card-title">{{ $cocktail->name }}</h5>
-                            <p class="text-capitalize">{{ $cocktail->tipo }}</p>
-                            
+                @forelse($cocktails as $cocktail)
+                    <div class="col-md-4 mb-4">
+                        <div class="card bg-transparent border-0">
                             <div class="d-flex justify-content-center">
-                                <!-- Botones de acción... (mantener igual que antes) -->
+                                <div class="image-container">
+                                    @if($cocktail->image_url)
+                                        <img src="{{ $cocktail->image_url }}" alt="{{ $cocktail->name }}"
+                                            class="cocktail-img-circle">
+                                    @else
+                                        <img src="{{ asset('images/default-cocktail.png') }}" alt="{{ $cocktail->name }}"
+                                            class="cocktail-img-circle">
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="card-body text-center text-white">
+                                <h5 class="card-title">{{ $cocktail->name }}</h5>
+                                <p class="text-capitalize">{{ $cocktail->tipo }}</p>
+
+                                <div class="d-flex justify-content-center mt-3">
+                                    <button class="btn btn-sm btn-outline-warning edit-btn mx-1"
+                                        data-id="{{ $cocktail->id }}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+
+                                    <button class="btn btn-sm btn-outline-danger delete-btn mx-1"
+                                        data-id="{{ $cocktail->id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
-    <!-- Modal para Ver Detalles -->
-    <div class="modal fade" id="viewModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-dark text-white">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title">Detalles del Cóctel</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <h4 id="view-name"></h4>
-                    <p><strong>Tipo:</strong> <span id="view-type"></span></p>
-                    <p><strong>Ingredientes:</strong></p>
-                    <p id="view-ingredients"></p>
-                    <p><strong>Instrucciones:</strong></p>
-                    <p id="view-instructions"></p>
-                </div>
+                @empty
+                    <div class="col-12 text-center text-white">
+                        <p>No hay cócteles guardados aún.</p>
+                        <a href="{{ route('index') }}" class="btn custom-btn">Explorar cócteles</a>
+                    </div>
+                @endforelse
             </div>
         </div>
     </div>
@@ -114,7 +121,8 @@
             <div class="modal-content bg-dark text-white">
                 <div class="modal-header border-0">
                     <h5 class="modal-title">Editar Cóctel</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <form id="edit-form" method="POST">
                     @csrf
@@ -133,11 +141,13 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Ingredientes</label>
-                            <textarea name="description" id="edit-ingredients" class="form-control" rows="3" required></textarea>
+                            <textarea name="description" id="edit-ingredients" class="form-control" rows="3"
+                                required></textarea>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Instrucciones</label>
-                            <textarea name="instructions" id="edit-instructions" class="form-control" rows="5" required></textarea>
+                            <textarea name="instructions" id="edit-instructions" class="form-control" rows="5"
+                                required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer border-0">
@@ -152,100 +162,121 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @csrf
     <script>
-    $(document).ready(function() {
-        // Configuración de los modales
-        const viewModal = new bootstrap.Modal('#viewModal');
-        const editModal = new bootstrap.Modal('#editModal');
-        
-        // Manejar clic en botón Ver
-        $('.view-btn').click(function() {
-            const id = $(this).data('id');
-            
-            $.get(`/cocktails/${id}`, function(data) {
-                $('#view-name').text(data.name);
-                $('#view-type').text(data.tipo === 'alcoholico' ? 'Alcohólico' : 'No alcohólico');
-                $('#view-ingredients').text(data.description);
-                $('#view-instructions').text(data.instructions);
-                viewModal.show();
-            });
-        });
-        
-        // Manejar clic en botón Editar
-        $('.edit-btn').click(function() {
-            const id = $(this).data('id');
-            
-            $.get(`/cocktails/${id}`, function(data) {
-                $('#edit-form').attr('action', `/cocktails/${id}`);
-                $('#edit-name').val(data.name);
-                $('#edit-type').val(data.tipo);
-                $('#edit-ingredients').val(data.description);
-                $('#edit-instructions').val(data.instructions);
-                editModal.show();
-            });
-        });
-        
-        // Manejar clic en botón Eliminar
-        $('.delete-btn').click(function() {
-            const id = $(this).data('id');
-            
-            Swal.fire({
-                title: '¿Eliminar cóctel?',
-                text: "¡No podrás revertir esto!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#ff4d6d',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: `/cocktails/${id}`,
-                        type: 'DELETE',
-                        data: {
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function() {
-                            Swal.fire(
-                                '¡Eliminado!',
-                                'El cóctel ha sido eliminado.',
-                                'success'
-                            ).then(() => location.reload());
-                        }
-                    });
+        // Esto asegura que jQuery pueda encontrar el token CSRF
+        $(document).ready(function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('input[name="_token"]').val()
                 }
             });
         });
-        
-        // Manejar envío del formulario de edición
-        $('#edit-form').submit(function(e) {
-            e.preventDefault();
-            
-            $.ajax({
-                url: $(this).attr('action'),
-                method: 'POST',
-                data: $(this).serialize(),
-                success: function() {
-                    editModal.hide();
-                    Swal.fire({
-                        title: '¡Actualizado!',
-                        text: 'El cóctel ha sido actualizado.',
-                        icon: 'success',
-                        confirmButtonColor: '#ff4d6d'
-                    }).then(() => location.reload());
-                },
-                error: function() {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'Ocurrió un error al actualizar',
-                        icon: 'error',
-                        confirmButtonColor: '#ff4d6d'
-                    });
-                }
+    </script>
+    <script>
+        $(document).ready(function () {
+            // Configuración de los modales
+            const viewModal = new bootstrap.Modal('#viewModal');
+            const editModal = new bootstrap.Modal('#editModal');
+
+            // Manejar clic en botón Editar
+            $(document).on('click', '.edit-btn', function () {
+                const id = $(this).data('id');
+
+                $.get(`/cocktails/${id}`, function (data) {
+                    $('#edit-form').attr('action', `/cocktails/${id}`);
+                    $('#edit-name').val(data.name);
+                    $('#edit-type').val(data.tipo);
+                    $('#edit-ingredients').val(data.description);
+                    $('#edit-instructions').val(data.instructions);
+                    editModal.show();
+                }).fail(function () {
+                    Swal.fire('Error', 'No se pudo cargar el cóctel para editar', 'error');
+                });
+            });
+
+            // Manejar clic en botón Eliminar
+            $('.delete-btn').click(function () {
+                const id = $(this).data('id');
+                const token = $('input[name="_token"]').val() || '{{ csrf_token() }}'; // Obtener token CSRF
+
+                Swal.fire({
+                    title: '¿Eliminar cóctel?',
+                    text: "¡No podrás revertir esto!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ff4d6d',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/cocktails/${id}`,
+                            type: 'DELETE',
+                            data: {
+                                _token: token // Enviar token CSRF
+                            },
+                            success: function (response) {
+                                if (response.status === 'success') {
+                                    Swal.fire(
+                                        '¡Eliminado!',
+                                        response.message,
+                                        'success'
+                                    ).then(() => location.reload());
+                                } else {
+                                    Swal.fire(
+                                        'Error',
+                                        response.message || 'Error desconocido',
+                                        'error'
+                                    );
+                                }
+                            },
+                            error: function (xhr) {
+                                let errorMsg = 'Error al conectar con el servidor';
+                                if (xhr.responseJSON && xhr.responseJSON.message) {
+                                    errorMsg = xhr.responseJSON.message;
+                                }
+                                Swal.fire(
+                                    'Error',
+                                    errorMsg,
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Manejar envío del formulario de edición
+            $('#edit-form').submit(function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function () {
+                        editModal.hide();
+                        Swal.fire({
+                            title: '¡Actualizado!',
+                            text: 'El cóctel ha sido actualizado.',
+                            icon: 'success',
+                            confirmButtonColor: '#ff4d6d'
+                        }).then(() => location.reload());
+                    },
+                    error: function () {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Ocurrió un error al actualizar',
+                            icon: 'error',
+                            confirmButtonColor: '#ff4d6d'
+                        });
+                    }
+                });
             });
         });
-    });
     </script>
 </body>
+
 </html>
