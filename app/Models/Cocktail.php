@@ -16,7 +16,8 @@ class Cocktail extends Model
         'description', 
         'tipo',
         'instructions',
-        'create_at', // Añade estos campos al fillable
+        'image_url',
+        'create_at',
         'update_at'
     ];
 

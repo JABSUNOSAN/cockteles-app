@@ -29,68 +29,76 @@
                 </svg>
                 Cócteles
             </a>
-            
+
             <div class="d-flex align-items-center">
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle text-white" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        {{ Auth::user()->name }}
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                        <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Perfil</a></li>
-                        <li>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <a class="dropdown-item" href="{{ route('logout') }}" 
-                                   onclick="event.preventDefault(); this.closest('form').submit();">
-                                    Cerrar sesión
-                                </a>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-                
-                <button class="navbar-toggler ms-2 d-block d-lg-none" type="button" data-bs-toggle="collapse" 
-                        data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" 
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ route('cocktails.saved') }}">Mis Cócteles</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle text-white" type="button" id="dropdownMenuButton"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ Auth::user()->name }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Perfil</a></li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                        onclick="event.preventDefault(); this.closest('form').submit();">
+                                        Cerrar sesión
+                                    </a>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button class="navbar-toggler ms-2 d-block d-lg-none" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
                         aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
             </div>
-        </div>
     </nav>
 
     <div class="">
         <div class="content">
             <div class="container pt-4">
                 <h2 class="text-white text-center mb-4">Todos los Cócteles</h2>
-                
+
                 <div class="row">
                     @foreach($cocktails as $cocktail)
-                    <div class="col-md-4 mb-4">
-                        <div class="card bg-transparent border-0">
-                            <div class="d-flex justify-content-center">
-                                <div class="image-container">
-                                    <img src="{{ $cocktail['strDrinkThumb'] }}" alt="{{ $cocktail['strDrink'] }}" 
-                                         class="cocktail-img-circle">
+                        <div class="col-md-4 mb-4">
+                            <div class="card bg-transparent border-0">
+                                <div class="d-flex justify-content-center">
+                                    <div class="image-container">
+                                        <img src="{{ $cocktail['strDrinkThumb'] }}" alt="{{ $cocktail['strDrink'] }}"
+                                            class="cocktail-img-circle">
+                                    </div>
+                                </div>
+                                <div class="card-body text-center text-white">
+                                    <h5 class="card-title">{{ $cocktail['strDrink'] }}</h5>
+                                    <a href="#" class="btn custom-btn mt-2 ver-detalle-btn"
+                                        data-id="{{ $cocktail['idDrink'] }}" data-bs-toggle="modal"
+                                        data-bs-target="#cocktailSaveModal">
+                                        Ver más
+                                    </a>
                                 </div>
                             </div>
-                            <div class="card-body text-center text-white">
-                                <h5 class="card-title">{{ $cocktail['strDrink'] }}</h5>
-                                <a href="#" class="btn custom-btn mt-2 ver-detalle-btn"
-                                    data-id="{{ $cocktail['idDrink'] }}" data-bs-toggle="modal"
-                                    data-bs-target="#cocktailSaveModal">
-                                    Ver más
-                                </a>
-                            </div>
                         </div>
-                    </div>
                     @endforeach
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal para guardar cóctel (NUEVO) -->
-    <div class="modal fade" id="cocktailSaveModal" tabindex="-1" aria-labelledby="cocktailSaveModalLabel" aria-hidden="true">
+    <!-- Modal para guardar cóctel -->
+    <div class="modal fade" id="cocktailSaveModal" tabindex="-1" aria-labelledby="cocktailSaveModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content bg-dark text-white">
                 <div class="modal-header border-0">
@@ -105,7 +113,7 @@
                     <p id="cocktail-instructions"></p>
                     <p class="mt-4"><strong>Ingredientes:</strong></p>
                     <ul id="cocktail-ingredients" class="list-unstyled ps-3"></ul>
-                    
+
                     <div class="text-center mt-4">
                         <button id="save-cocktail-btn" class="btn custom-btn">
                             <i class="fas fa-save me-2"></i> ¿Quieres guardar esta bebida?
@@ -123,22 +131,34 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         let currentCocktailData = null;
+        let cocktailModal = null;
 
-        $(document).on('click', '.ver-detalle-btn', function () {
+        $(document).ready(function() {
+            // Inicializar el modal
+            cocktailModal = new bootstrap.Modal(document.getElementById('cocktailSaveModal'));
+            
+            // Manejar clic en la X del modal
+            $('#cocktailSaveModal .btn-close').click(function() {
+                cocktailModal.hide();
+            });
+        });
+
+        $(document).on('click', '.ver-detalle-btn', function(e) {
+            e.preventDefault();
             var idDrink = $(this).data('id');
-            console.log("Mostrando detalles para cóctel ID:", idDrink);
-
+            
             $.ajax({
                 url: '/cocktails/' + idDrink,
                 method: 'GET',
-                success: function (data) {
-                    console.log("Datos recibidos:", data);
+                success: function(data) {
                     currentCocktailData = data;
                     
-                    $('#cocktailSaveModal #cocktail-name').text(data.strDrink);
-                    $('#cocktailSaveModal #cocktail-type').text(data.strAlcoholic === 'Alcoholic' ? 'Alcohólico' : 'No alcohólico');
-                    $('#cocktailSaveModal #cocktail-instructions').text(data.strInstructions);
+                    // Actualizar contenido del modal
+                    $('#cocktail-name').text(data.strDrink);
+                    $('#cocktail-type').text(data.strAlcoholic === 'Alcoholic' ? 'Alcohólico' : 'No alcohólico');
+                    $('#cocktail-instructions').text(data.strInstructions);
 
+                    // Construir lista de ingredientes
                     let ingredientes = '';
                     for (let i = 1; i <= 15; i++) {
                         let ingrediente = data['strIngredient' + i];
@@ -147,13 +167,17 @@
                             ingredientes += `<li>${medida ? medida : ''} ${ingrediente}</li>`;
                         }
                     }
-                    $('#cocktailSaveModal #cocktail-ingredients').html(ingredientes);
+                    $('#cocktail-ingredients').html(ingredientes);
+                    
+                    // Mostrar el modal
+                    cocktailModal.show();
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     console.error("Error al cargar detalles:", xhr);
-                    $('#cocktailSaveModal #cocktail-name').text('Error al cargar los datos');
-                    $('#cocktailSaveModal #cocktail-instructions').text('');
-                    $('#cocktailSaveModal #cocktail-ingredients').html('');
+                    $('#cocktail-name').text('Error al cargar los datos');
+                    $('#cocktail-instructions').text('');
+                    $('#cocktail-ingredients').html('');
+                    cocktailModal.show();
                 }
             });
         });
@@ -204,9 +228,11 @@
                     name: cocktailData.strDrink,
                     description: description,
                     tipo: cocktailData.strAlcoholic === 'Alcoholic' ? 'alcoholico' : 'no alcoholico',
-                    instructions: cocktailData.strInstructions
+                    instructions: cocktailData.strInstructions,
+                    image_url: cocktailData.strDrinkThumb
                 },
                 success: function(response) {
+                    cocktailModal.hide(); // Cerrar el modal después de guardar
                     Swal.fire({
                         title: '¡Guardado!',
                         text: 'El cóctel ha sido guardado correctamente.',

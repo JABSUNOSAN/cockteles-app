@@ -27,49 +27,76 @@ class CocktailController extends Controller
     public function getCocktailDetails($idDrink)
     {
         $client = new Client();
-        $response = $client->get('https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=' . $idDrink);
-        $details = json_decode($response->getBody()->getContents(), true);
-        return response()->json($details['drinks'][0]);
+        try {
+            $response = $client->get('https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=' . $idDrink);
+            $data = json_decode($response->getBody()->getContents(), true);
+
+            if (empty($data['drinks'])) {
+                return response()->json(['error' => 'Cóctel no encontrado'], 404);
+            }
+
+            return response()->json($data['drinks'][0]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error al obtener detalles del cóctel: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function save(Request $request)
     {
         $request->validate([
-            'id' => 'required|string|max:255',
+            'id' => 'required|string',
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'tipo' => 'required|in:alcoholico,no alcoholico',
-            //'instructions' => 'required|string'
+            //'instructions' => 'required|string',
+            'image_url' => 'sometimes|url|nullable'
         ]);
 
+        $existing = Cocktail::find($request->id);
+        if ($existing) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Este cóctel ya está guardado'
+            ], 409);
+        }
         try {
-            $existing = Cocktail::find($request->id);
-            if ($existing) {
-                return response()->json([
-                    'message' => 'Este cóctel ya está guardado en tu base de datos'
-                ], 409);
-            }
+            $cocktail = Cocktail::updateOrCreate(
+                ['id' => $request->id],
+                [
+                    'name' => $request->name,
+                    'description' => $request->description,
+                    'tipo' => $request->tipo,
+                    //'instructions' => $request->instructions,
+                    'image_url' => $request->image_url,
+                    'update_at' => now()
+                ]
+            );
 
-            $cocktail = Cocktail::create([
-                'id' => $request->id,
-                'name' => $request->name,
-                'description' => $request->description,
-                'tipo' => $request->tipo,
-                //'instructions' => $request->instructions
-            ]);
+            $message = $cocktail->wasRecentlyCreated ?
+                'Cóctel guardado correctamente' :
+                'Cóctel actualizado correctamente';
 
             return response()->json([
                 'success' => true,
-                'message' => 'Cóctel guardado correctamente'
+                'message' => $message,
+                'data' => $cocktail
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
+                'success' => false,
                 'message' => 'Error al guardar el cóctel: ' . $e->getMessage()
             ], 500);
         }
     }
-
+    public function savedCocktails()
+    {
+        $cocktails = Cocktail::orderBy('create_at', 'desc')->get();
+        return view('cocktails.saved', compact('cocktails'));
+    }
 
     public function store(Request $request)
     {

@@ -14,6 +14,7 @@ class CreateCocktailsTable extends Migration
             $table->text('description');
             $table->enum('tipo', ['alcoholico', 'no alcoholico']);
             $table->text('instructions');
+            $table->string('image_url')->nullable();
             $table->timestamp('create_at')->nullable(); // ← Sin la "d"
             $table->timestamp('update_at')->nullable(); // ← Sin la "d"
         });

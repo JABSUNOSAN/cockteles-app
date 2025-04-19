@@ -12,6 +12,8 @@ Route::get('/dashboard', function () {
     return redirect()->route('index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/cocktails/{idDrink}', [CocktailController::class, 'getCocktailDetails']);
+
 // Ruta para la vista index
 Route::get('/index', [CocktailController::class, 'index'])->name('index')->middleware('auth');
 
@@ -21,6 +23,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/cocktails/save', [CocktailController::class, 'save'])->name('cocktails.save');
+    Route::get('/cocktails/saved', [CocktailController::class, 'savedCocktails'])->name('cocktails.saved');
+    Route::resource('cocktails', CocktailController::class)->except(['create', 'show']);
 });
 
 // Rutas de cócteles
@@ -33,8 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/cocktails/{id}', [CocktailController::class, 'destroy']);
 });
 
-// Rutas de API para detalles de cócteles (accesibles sin autenticación)
-Route::get('/cocktails/{idDrink}', [CocktailController::class, 'getCocktailDetails']);
+
 Route::get('/cocktails/{idDrink}/details', [CocktailController::class, 'getCocktailDetails']);
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
